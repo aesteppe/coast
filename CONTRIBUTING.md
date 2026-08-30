@@ -23,13 +23,25 @@ dependency install. Edit a file, refresh the page.
 ## Running the tests
 
 ```
-node test/model.test.js
+npm test
 ```
 
-Or `npm test`, which runs the same thing. The suite covers the pure logic
-(geometry, resampling, smoothing, and the energy model) with no browser and no
-network, so it is fast and deterministic. Anything touching the DOM or a public
-API is deliberately out of scope.
+That runs every file in `test/` through `node --test`, with no dependencies to
+install: geometry, resampling, smoothing, OSRM response parsing, elevation
+provider fallback (fetch is stubbed), and the energy model checked against
+closed-form arithmetic. Run one file directly for the detailed per-assertion
+output, for example `node test/model.test.js`.
+
+Lint and the browser suite need a one-time `npm install`:
+
+```
+npm run lint
+npx playwright install chromium   # first time only
+npm run e2e
+```
+
+The browser tests mock every external service, so they are deterministic and
+hit no public API. CI runs all three on every push and pull request.
 
 If you change `js/energy.js`, add an assertion. The model is the part of this
 project most worth protecting.
@@ -51,13 +63,14 @@ js/
   mapview.js          all Leaflet code
   chartview.js        the elevation profile
   cards.js            route comparison cards and the status line
-  routing.js          the search pipeline
+  routing.js          OSRM parsing and the search pipeline
   demo.js             offline synthetic demo trip
   app.js              entry point, render pipeline, event wiring
-test/model.test.js    assertions for the pure modules
+test/                 dependency-free unit tests, one concern per file
+e2e/                  Playwright browser tests with all services mocked
 ```
 
-Two conventions worth knowing:
+Three conventions worth knowing:
 
 - **All math is SI.** Meters, joules, kilograms, seconds. Unit conversion
   happens only in `format.js`. If you find yourself dividing by 1609 outside
@@ -66,6 +79,11 @@ Two conventions worth knowing:
   need to trigger a selection change and both need to react to one. Rather than
   importing each other they emit on `bus.js`, and `app.js` owns the response.
   Keep it that way.
+- **Respect the shared services.** Every geocoding call must go through the
+  limiter in `js/geocode.js`; Nominatim's policy caps traffic at one request
+  per second and forbids search-as-you-type autocomplete, so do not reintroduce
+  it. One routing call per search. If you add an endpoint, add it to the CSP
+  `connect-src` list in `index.html` too.
 
 ## Where to start
 
@@ -91,7 +109,8 @@ description. Broadly, the areas most open to help:
 - Describe what changed and why. If it changes the model, say what physical
   effect you are capturing and where the numbers came from.
 - Match the surrounding style: two-space indent, single quotes, semicolons,
-  JSDoc on exported functions. There is no linter; just read the neighbors.
+  JSDoc on exported functions. `npm run lint` enforces only correctness rules;
+  for formatting, read the neighbors.
 
 ## Scope
 

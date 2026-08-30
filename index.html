@@ -3,14 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- GitHub Pages cannot set response headers, so the CSP rides in a meta tag.
+     If you change a service endpoint in js/config.js, update connect-src here too. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.basemaps.cartocdn.com; connect-src https://router.project-osrm.org https://nominatim.openstreetmap.org https://api.open-meteo.com https://api.open-elevation.com; base-uri 'self'; form-action 'none'; object-src 'none'">
 <title>Coast · EV Regen Router</title>
 <meta name="description" content="Compare driving routes by net EV battery use after regenerative braking.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1' y='1' width='28' height='28' rx='8' fill='%23121A23'/%3E%3Cpath d='M5 8 L13 17 L25 24' stroke='%233DDC97' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M18.5 9.5 L15.5 14.5 h3 l-3 5.5' stroke='%23F2B33D' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+  integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous">
 <link rel="stylesheet" href="css/styles.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+  integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"
+  integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -29,8 +36,8 @@
     <div class="tagline">Regen-optimized EV routing</div>
     <div class="spacer"></div>
     <div class="units" role="group" aria-label="Distance units">
-      <button id="uMi" class="on" type="button">mi</button>
-      <button id="uKm" type="button">km</button>
+      <button id="uMi" class="on" type="button" aria-pressed="true">mi</button>
+      <button id="uKm" type="button" aria-pressed="false">km</button>
     </div>
   </header>
 
@@ -58,7 +65,7 @@
         </div>
         <button class="cta" id="btnGo" type="button"><span class="spin"></span><span id="goTxt">Find regen routes</span></button>
         <button class="cta2" id="btnDemo" type="button">Load a demo trip (works without network)</button>
-        <p class="hint">Tip: click anywhere on the map to set a point.</p>
+        <p class="hint">Tip: type a place and press Enter to search it, or click anywhere on the map to set a point.</p>
       </section>
 
       <details class="box vbox" id="veh">
@@ -86,7 +93,7 @@
         </div>
       </details>
 
-      <div id="status">Enter a start and destination to compare routes.</div>
+      <div id="status" role="status" aria-live="polite">Enter a start and destination to compare routes.</div>
 
       <div id="cards"></div>
 
@@ -110,9 +117,10 @@
       <footer>
         Routing by the <a href="https://project-osrm.org" target="_blank" rel="noopener">OSRM</a> demo server ·
         Geocoding by <a href="https://nominatim.org" target="_blank" rel="noopener">Nominatim</a> ·
-        Elevation by <a href="https://open-elevation.com" target="_blank" rel="noopener">Open-Elevation</a> with
-        <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> fallback ·
-        Map data &copy; OpenStreetMap contributors, tiles &copy; CARTO. Estimates only; drive safely.
+        Elevation by <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
+        (<a href="https://doi.org/10.5270/ESA-c5d3d65" target="_blank" rel="noopener">Copernicus DEM</a>) with
+        <a href="https://open-elevation.com" target="_blank" rel="noopener">Open-Elevation</a> fallback ·
+        Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, tiles &copy; CARTO. Estimates only; drive safely.
       </footer>
     </div>
 

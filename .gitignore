@@ -2,3 +2,8 @@
 Thumbs.db
 .Rhistory
 .Rapp.history
+
+# tooling
+node_modules/
+test-results/
+playwright-report/
