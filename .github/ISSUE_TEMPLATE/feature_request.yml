@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest a capability Coast does not have
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Coast is a comparison tool that shows why one route costs less energy than
+        another. It is not a turn-by-turn navigator and not a range predictor.
+        Requests pushing toward either are likely out of scope, but say your case.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: Describe the situation, not the implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: help
+    attributes:
+      label: Would you be willing to work on this
+      options:
+        - "Yes"
+        - "Maybe, with guidance"
+        - "No, just suggesting"
+    validations:
+      required: true

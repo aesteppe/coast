@@ -1,0 +1,34 @@
+name: Model correction
+description: The energy estimate looks wrong, or a physical effect is missing
+labels: ["model", "help wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Coast's estimates come from a deliberately simple model in `js/energy.js`.
+        Corrections are welcome. Numbers with a source behind them are welcome most.
+  - type: textarea
+    id: effect
+    attributes:
+      label: What the model gets wrong
+      description: Which physical effect is missing or mishandled.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it should do instead
+      description: The corrected behavior, with the governing relationship if you have it.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Paper, dataset, manufacturer figure, or your own measurements.
+  - type: checkboxes
+    id: tests
+    attributes:
+      label: Verification
+      options:
+        - label: I can describe an assertion for `test/model.test.js` that would catch this
